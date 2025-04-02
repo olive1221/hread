@@ -2,15 +2,21 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import Post from '@/models/Post';
 
+type RouteContext = {
+  params: {
+    id: string;
+  };
+};
+
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: RouteContext
 ) {
   try {
     await connectDB();
     
     const post = await Post.findByIdAndUpdate(
-      params.id,
+      context.params.id,
       { $inc: { views: 1 } },
       { new: true }
     );
