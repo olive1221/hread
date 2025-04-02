@@ -5,7 +5,7 @@ import Post from '@/models/Post';
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
-): Promise<NextResponse> {
+) {
   try {
     await connectDB();
     
