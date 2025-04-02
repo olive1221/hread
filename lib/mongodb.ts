@@ -6,6 +6,15 @@ if (!process.env.MONGODB_URI) {
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
+interface MongooseCache {
+  conn: mongoose.Connection | null;
+  promise: Promise<mongoose.Connection> | null;
+}
+
+declare global {
+  var mongoose: MongooseCache | undefined;
+}
+
 let cached = global.mongoose;
 
 if (!cached) {
