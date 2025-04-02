@@ -2,15 +2,24 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import Post from '@/models/Post';
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest) {
   try {
     await connectDB();
-    
+
+    // URL에서 동적 파라미터(id) 추출
+    const url = new URL(request.url);
+    const pathParts = url.pathname.split('/');
+    const id = pathParts[pathParts.indexOf('posts') + 1]; // /api/posts/[id]/views
+
+    if (!id) {
+      return NextResponse.json(
+        { success: false, message: 'Invalid post ID' },
+        { status: 400 }
+      );
+    }
+
     const post = await Post.findByIdAndUpdate(
-      params.id,
+      id,
       { $inc: { views: 1 } },
       { new: true }
     );
